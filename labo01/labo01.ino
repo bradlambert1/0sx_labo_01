@@ -1,10 +1,11 @@
+const string ID = "2471005";
+
 void setup() {
   // put your setup code here, to run once:
   pinMode(LED_BUILTIN, OUTPUT);
-  const string ID = "2471005";
 }
 
-void etatAllume(string ID) {
+void etatAllume() {
 serial.print("Allume - ");
 serial.print(ID);
 digitalWrite(LED_BUILTIN, HIGH);
@@ -12,7 +13,7 @@ delay(2000);
 digitalWrite(LED_BUILTIN, LOW);
 }
 
-void etatClignotement(string ID) {
+void etatClignotement() {
 serial.print("Clignotement - ");
 serial.print(ID);
 int loops = stoi(ID[-2]);
@@ -27,19 +28,38 @@ for (int i = 0; i<loops; i++) {
 }
 }
 
-void etatVariation(string ID) {
-serial.print("Eteint - ");
+void etatVariation() {
+serial.print("Variation - ");
 serial.print(ID);
+float brightness = 0;
 if (stoi(ID[-1]) % 2 == 0 ) {
-
+  brightness = 0;
+  for (int i = 0; i<128; i++) {
+      brightness += 0.78125
+    delay(16);
+  }
 } else {
-  
-}
+  brightness = 100;
+  for (int i = 0; i<128; i++) {
+      brightness -= 0.78125
+    delay(16);
+  }
+
+  brightness = 100;
 }
 
+void etatEteint() {
+  serial.print("Eteint - ");
+  serial.print(ID);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(2000);
+  digitalWrite(LED_BUILTIN, high);
+
+}
 void loop() {
   // put your main code here, to run repeatedly:
-etatAllume(ID);
-etatClignotement(ID);
-etatVariation(ID);
+etatAllume();
+etatClignotement();
+etatVariation();
+etatEteint();
 }
