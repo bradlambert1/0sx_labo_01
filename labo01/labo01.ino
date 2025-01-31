@@ -1,27 +1,30 @@
 const String ID = "2471005";
-
 void setup() {
   // put your setup code here, to run once:
   pinMode(LED_BUILTIN, OUTPUT);
-}
+  Serial.begin(9600); // open the serial port at 9600 bps:
 
-void etatAllume() {
-Serial.print("Allume - ");
+
+}
+void print(String text) {
+Serial.print(text);
+Serial.print(" - ");
 Serial.print(ID);
+Serial.print("\n");
+}
+void etatAllume() {
+print("Allume");
 digitalWrite(LED_BUILTIN, HIGH);
 delay(2000);
 digitalWrite(LED_BUILTIN, LOW);
 }
-
 void etatClignotement() {
-Serial.print("Clignotement - ");
-Serial.print(ID);
-char loops = ID[-2];
-int loopsN = 0;
-if (loops == '0') {
-  loopsN = 10;
+print("Clignotement");
+int loops = 0;
+if (loops == 0) {
+  loops = 10;
 }
-for (int i = 0; i<loopsN; i++) {
+for (int i = 0; i<loops; i++) {
   digitalWrite(LED_BUILTIN, HIGH);
   delay(250);
   digitalWrite(LED_BUILTIN, LOW);
@@ -30,29 +33,31 @@ for (int i = 0; i<loopsN; i++) {
 }
 
 void etatVariation() {
-Serial.print("Variation - ");
-Serial.print(ID);
+print("Variation");
 float brightness = 0;
-if (ID[-1] == '2' || ID[-1] == '4' || ID[-1] == '6' || ID[-1] == '8' || ID[-1] == '0') {
+int lastDaNumber = 5;
+int steps = 256;
+int rampTime = 2048;
+float delayTime = rampTime/steps;
+if (lastDaNumber % 2 == 0) {
   brightness = 0;
-  for (int i = 0; i<128; i++) {
-      brightness += 0.78125;
-    delay(16);
+  for (int i = 0; i<steps; i++) {
+      brightness += 1;
+      analogWrite(LED_BUILTIN, brightness);
+      delay(delayTime);
   }
 } else {
-  brightness = 100;
-  for (int i = 0; i<128; i++) {
-      brightness -= 0.78125;
-    delay(16);
+  brightness = 255;
+  for (int i = 0; i<steps; i++) {
+      brightness -= 1;
+      analogWrite(LED_BUILTIN, brightness);
+      delay(delayTime);
   }
-
-  brightness = 100;
   }
 }
 
 void etatEteint() {
-  Serial.print("Eteint - ");
-  Serial.print(ID);
+  print("Eteint");
   digitalWrite(LED_BUILTIN, LOW);
   delay(2000);
   digitalWrite(LED_BUILTIN, HIGH);
